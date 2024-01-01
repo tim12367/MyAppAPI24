@@ -90,16 +90,12 @@ class MyView(c: Context) : View(c), TickListener {
                 alertDialogBuilder.setTitle("遊戲結束")
                 alertDialogBuilder.setMessage("所有的鴨鴨都被消滅了!需要更多鴨鴨嗎?")
                 alertDialogBuilder.setCancelable(false)
-                alertDialogBuilder.setPositiveButton("好", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        makeRubberDucks() // 產生鴨鴨
-                    }
-                })
-                alertDialogBuilder.setNegativeButton("不用了", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        (context as Activity).finish() // 直接結束APP
-                    }
-                })
+                alertDialogBuilder.setPositiveButton("好") { _, _ ->
+                    makeRubberDucks() // 產生鴨鴨
+                }
+                alertDialogBuilder.setNegativeButton("不用了") { _, _ ->
+                    (context as Activity).finish() // 直接結束APP
+                }
                 alertDialogBuilder.create().show()
             }
         }
