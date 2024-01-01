@@ -53,6 +53,9 @@ class MyView(c: Context) : View(c), TickListener {
         }
     }
 
+    /**
+     * 產生鴨鴨ㄋ
+     */
     private fun makeRubberDucks() {
         for (i in 1..10) {
             val rx = Random.nextInt(10, width - size).toFloat()
@@ -67,29 +70,34 @@ class MyView(c: Context) : View(c), TickListener {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val tappedRubberDucks: ArrayList<RubberDuck> = ArrayList()
 
-            for (d in rubberDuckList.reversed()) { // 將鴨子裝入list中
+            for (d in rubberDuckList.reversed()) { // 將鴨子裝入list中，反轉後讓前方鴨子先被刪除
                 if (d.contains(event.x, event.y)) { //用 event.x event.y 輸入鴨子 鴨子判斷是否被選中
-                    tappedRubberDucks.add(d)
-                    timer.unregister(d)
+                    tappedRubberDucks.add(d) // 法二：先在刪除列表內，加入需要刪除的鴨子
+                    timer.unregister(d) // Subject 註銷
 //                    rubberDuckList.remove(d)
-//                    break
+//                    break // 法一：直接結束迴圈防止ConcurrentModificationException
+
 //                    Toast.makeText(context, "你按了一隻鴨鴨~", Toast.LENGTH_SHORT).show()
-//                    d.pressed()
+//                    d.pressed() // 繪製黑白鴨
 //                    invalidate()
                 }
             }
-            rubberDuckList.removeAll(tappedRubberDucks)
+            rubberDuckList.removeAll(tappedRubberDucks) // 結束迴圈後在一起刪除
             invalidate()
 
-            class YesButtenListener : DialogInterface.OnClickListener {
+            /**
+             * DialogInterface.OnClickListener 是 functional interface
+             * 只有一個 function 需要實作
+             */
+            class YesButtonListener : DialogInterface.OnClickListener {
                 override fun onClick(dialog: DialogInterface?, which: Int) {
-                    makeRubberDucks()
+                    makeRubberDucks() // 產生鴨鴨
                 }
             }
 
             class NoButtonListener : DialogInterface.OnClickListener {
                 override fun onClick(dialog: DialogInterface?, which: Int) {
-                    (context as Activity).finish()
+                    (context as Activity).finish() // 直接結束APP
                 }
             }
 
@@ -98,7 +106,7 @@ class MyView(c: Context) : View(c), TickListener {
                 alertDialogBuilder.setTitle("遊戲結束")
                 alertDialogBuilder.setMessage("所有的鴨鴨都被消滅了!需要更多鴨鴨嗎?")
                 alertDialogBuilder.setCancelable(false)
-                alertDialogBuilder.setPositiveButton("好", YesButtenListener())
+                alertDialogBuilder.setPositiveButton("好", YesButtonListener())
                 alertDialogBuilder.setNegativeButton("不用了", NoButtonListener())
                 alertDialogBuilder.create().show()
             }
