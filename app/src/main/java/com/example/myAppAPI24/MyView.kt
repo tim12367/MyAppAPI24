@@ -54,7 +54,7 @@ class MyView(c: Context) : View(c), TickListener {
     }
 
     /**
-     * 產生鴨鴨ㄋ
+     * 產生鴨鴨
      */
     private fun makeRubberDucks() {
         for (i in 1..10) {
