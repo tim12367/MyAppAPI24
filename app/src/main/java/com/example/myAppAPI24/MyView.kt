@@ -85,29 +85,21 @@ class MyView(c: Context) : View(c), TickListener {
             rubberDuckList.removeAll(tappedRubberDucks) // 結束迴圈後在一起刪除
             invalidate()
 
-            /**
-             * DialogInterface.OnClickListener 是 functional interface
-             * 只有一個 function 需要實作
-             */
-            class YesButtonListener : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    makeRubberDucks() // 產生鴨鴨
-                }
-            }
-
-            class NoButtonListener : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    (context as Activity).finish() // 直接結束APP
-                }
-            }
-
             if (rubberDuckList.size == 0) {
                 val alertDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(context)
                 alertDialogBuilder.setTitle("遊戲結束")
                 alertDialogBuilder.setMessage("所有的鴨鴨都被消滅了!需要更多鴨鴨嗎?")
                 alertDialogBuilder.setCancelable(false)
-                alertDialogBuilder.setPositiveButton("好", YesButtonListener())
-                alertDialogBuilder.setNegativeButton("不用了", NoButtonListener())
+                alertDialogBuilder.setPositiveButton("好", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        makeRubberDucks() // 產生鴨鴨
+                    }
+                })
+                alertDialogBuilder.setNegativeButton("不用了", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        (context as Activity).finish() // 直接結束APP
+                    }
+                })
                 alertDialogBuilder.create().show()
             }
         }
