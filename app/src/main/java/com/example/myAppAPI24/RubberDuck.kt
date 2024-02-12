@@ -5,27 +5,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.RectF
-import android.util.Log
 import com.example.myappapi24.R
 
 
-class RubberDuck(res: Resources, x: Float, y: Float, size: Int): TickListener {
+class RubberDuck(res: Resources, x: Float, y: Float, size: Int) : TickListener, Comparable<RubberDuck> {
     private val bounds: RectF = RectF(x, y, x + size, y + size)
     private var duckImage: Bitmap = BitmapFactory.decodeResource(res, R.drawable.duck)
     private var grayDuckImage: Bitmap = BitmapFactory.decodeResource(res, R.drawable.gray_duck)
-    private var pressed = false;
 
     init {
         duckImage = Bitmap.createScaledBitmap(duckImage, size, size, true)
         grayDuckImage = Bitmap.createScaledBitmap(grayDuckImage, size, size, true)
-    }
-
-    fun pressed() {
-        pressed = true
-    }
-
-    fun unpressed() {
-        pressed = false
     }
 
     /**
@@ -38,11 +28,7 @@ class RubberDuck(res: Resources, x: Float, y: Float, size: Int): TickListener {
     }
 
     fun drawRubberDuck(c: Canvas) {
-        if (pressed) {
-            c.drawBitmap(grayDuckImage, bounds.left, bounds.top, null)
-        } else {
-            c.drawBitmap(duckImage, bounds.left, bounds.top, null)
-        }
+        c.drawBitmap(duckImage, bounds.left, bounds.top, null)
     }
 
     fun contains(x: Float, y: Float): Boolean {
@@ -51,5 +37,9 @@ class RubberDuck(res: Resources, x: Float, y: Float, size: Int): TickListener {
 
     override fun tick() {
         this.dance()
+    }
+
+    override fun compareTo(other: RubberDuck): Int {
+        return (other.bounds.top - this.bounds.top).toInt()
     }
 }

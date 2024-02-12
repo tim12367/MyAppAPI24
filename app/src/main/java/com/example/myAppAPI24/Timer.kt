@@ -27,7 +27,6 @@ class Timer(looper: Looper) : Handler(looper) {
     }
 
     override fun handleMessage(msg: Message) {
-        // some method goes here...
         Log.d("Timer", "刷新!")
         notifyListener()
         sendMessageDelayed(Message.obtain(), 100)

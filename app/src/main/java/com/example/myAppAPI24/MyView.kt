@@ -3,37 +3,21 @@ package com.example.myAppAPI24
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.os.Handler
 import android.os.Looper
-import android.os.Message
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
+import java.util.Collections
 import kotlin.random.Random
 
 class MyView(c: Context) : View(c), TickListener {
-    private val paint1: Paint = Paint()
-    private val paint2: Paint = Paint()
     private var screenWidth: Float = 0f
     private var screenHeight: Float = 0f
     private var rubberDuckList = ArrayList<RubberDuck>()
     private var firstTimeDraw = true
     private val timer: Timer = Timer(Looper.getMainLooper())
     private var size = 0
-
-    init {
-        paint1.color = Color.RED;
-        paint2.color = Color.BLUE; // 顏色
-        paint2.strokeWidth = 10f; // 粗度
-        paint2.style = Paint.Style.STROKE // 不要填滿
-    }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
@@ -48,6 +32,9 @@ class MyView(c: Context) : View(c), TickListener {
 
             firstTimeDraw = false
         }
+
+        Collections.sort(rubberDuckList) // 排序鴨子
+
         for (d in rubberDuckList) {
             d.drawRubberDuck(canvas)
         }
@@ -74,12 +61,6 @@ class MyView(c: Context) : View(c), TickListener {
                 if (d.contains(event.x, event.y)) { //用 event.x event.y 輸入鴨子 鴨子判斷是否被選中
                     tappedRubberDucks.add(d) // 法二：先在刪除列表內，加入需要刪除的鴨子
                     timer.unregister(d) // Subject 註銷
-//                    rubberDuckList.remove(d)
-//                    break // 法一：直接結束迴圈防止ConcurrentModificationException
-
-//                    Toast.makeText(context, "你按了一隻鴨鴨~", Toast.LENGTH_SHORT).show()
-//                    d.pressed() // 繪製黑白鴨
-//                    invalidate()
                 }
             }
             rubberDuckList.removeAll(tappedRubberDucks) // 結束迴圈後在一起刪除
@@ -90,24 +71,11 @@ class MyView(c: Context) : View(c), TickListener {
                 alertDialogBuilder.setTitle("遊戲結束")
                 alertDialogBuilder.setMessage("所有的鴨鴨都被消滅了!需要更多鴨鴨嗎?")
                 alertDialogBuilder.setCancelable(false)
-                alertDialogBuilder.setPositiveButton("好") { _, _ ->
-                    makeRubberDucks() // 產生鴨鴨
-                }
-                alertDialogBuilder.setNegativeButton("不用了") { _, _ ->
-                    (context as Activity).finish() // 直接結束APP
-                }
-                alertDialogBuilder.create().show()
+                alertDialogBuilder.setPositiveButton("好") { _, _ -> makeRubberDucks() }// 產生鴨鴨
+                alertDialogBuilder.setNegativeButton("不用了") { _, _ -> (context as Activity).finish() }// 直接結束APP
+                alertDialogBuilder.create().show() // 顯示alertDialog
             }
         }
-//        else if (event.action == MotionEvent.ACTION_UP) {
-//            for (d in rubberDuckList) { // 將鴨子裝入list中
-//                if (d.contains(event.x, event.y)) { //用 event.x event.y 輸入鴨子 鴨子判斷是否被選中
-//                    Toast.makeText(context, "你放開了鴨鴨~", Toast.LENGTH_SHORT).show()
-//                    d.unpressed()
-//                    invalidate()
-//                }
-//            }
-//        }
         return true
     }
 
