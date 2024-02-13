@@ -21,7 +21,7 @@ class RubberDuck(res: Resources, x: Float, y: Float, size: Int) : TickListener, 
     /**
      * 隨機移動位置
      */
-    fun dance() {
+    private fun dance() {
         val dx = (Math.random() * 10 - 5).toFloat()
         val dy = (Math.random() * 10 - 5).toFloat()
         bounds.offset(dx, dy)

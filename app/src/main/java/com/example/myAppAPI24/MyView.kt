@@ -5,9 +5,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Canvas
+import android.media.MediaPlayer
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
+import com.example.myappapi24.R
 import java.util.Collections
 import kotlin.random.Random
 
@@ -18,8 +20,13 @@ class MyView(c: Context) : View(c), TickListener {
     private var firstTimeDraw = true
     private val timer: Timer = Timer(Looper.getMainLooper())
     private var size = 0
+    private var soundTrack: MediaPlayer? = MediaPlayer.create(c, R.raw.chipichipichapachapa)
 
-    @SuppressLint("DrawAllocation")
+    init {
+        soundTrack!!.start()
+        soundTrack!!.isLooping = true
+    }
+
     override fun onDraw(canvas: Canvas) {
         if (firstTimeDraw) {
             screenWidth = width.toFloat()
@@ -51,6 +58,30 @@ class MyView(c: Context) : View(c), TickListener {
             rubberDuckList.add(rubberDuck)
             timer.register(rubberDuck)
         }
+    }
+
+    /**
+     * 背景運作時執行的動作
+     */
+    fun gotBackgrounded() {
+        soundTrack!!.pause()
+        timer.pause()
+    }
+
+    /**
+     * 前景運作時執行的動作
+     */
+    fun getForegrounded() {
+        soundTrack!!.start()
+        timer.unPause()
+    }
+
+    /**
+     * 釋放資源時執行的動作
+     */
+    fun releaseResources() {
+        soundTrack!!.release()
+        soundTrack = null
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

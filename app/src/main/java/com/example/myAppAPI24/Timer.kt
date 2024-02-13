@@ -3,10 +3,10 @@ package com.example.myAppAPI24
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 
 class Timer(looper: Looper) : Handler(looper) {
     private val listeners: ArrayList<TickListener> = ArrayList()
+    private var paused = false
 
     init {
         this.sendMessageDelayed(Message.obtain(), 0)
@@ -20,15 +20,30 @@ class Timer(looper: Looper) : Handler(looper) {
         listeners.remove(t)
     }
 
-    fun notifyListener () {
+    fun notifyListener() {
         for (listener in listeners) {
             listener.tick()
         }
     }
 
+    /**
+     * 暫停timer
+     */
+    fun pause() {
+        paused = true
+    }
+
+    /**
+     * 開始timer
+     */
+    fun unPause() {
+        paused = false
+    }
+
     override fun handleMessage(msg: Message) {
-        Log.d("Timer", "刷新!")
-        notifyListener()
+        if (!paused) {
+            notifyListener()
+        }
         sendMessageDelayed(Message.obtain(), 100)
     }
 }
