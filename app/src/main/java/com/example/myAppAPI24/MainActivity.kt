@@ -1,34 +1,43 @@
 package com.example.myAppAPI24
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var myView: MyView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 點選鴨鴨程式碼
-        myView = MyView(this);
-        setContentView(myView)
-    }
 
-    override fun onPause() {
-        Log.d("state change","暫停")
-        super.onPause()
-        myView.gotBackgrounded()
-    }
+        // layout
+        val linearLayout = LinearLayout(this)
+        // button
+        val button = Button(this)
+        button.text = "前往第二個Activity"
+        button.setOnClickListener {
+            val intent = Intent() //implicit intent
+            intent.action = Intent.ACTION_SEND
+            intent.putExtra(Intent.EXTRA_TEXT, "你好嗎")
+            intent.type = "text/plain"
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+            }
+//            val intent = Intent(this, SecondActivity::class.java)
+//            startActivity(intent)
+        }
+        // text
+        val textView = TextView(this)
+        textView.text = "目前在第一個Activity"
 
-    override fun onResume() {
-        Log.d("state change","繼續")
-        super.onResume()
-        myView.getForegrounded()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        myView.releaseResources() // 釋放資源
+        linearLayout.addView(button)
+        linearLayout.addView(textView)
+        setContentView(linearLayout)
     }
 }
